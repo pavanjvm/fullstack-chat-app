@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.DOCUMENTDB_URI, {
-      ssl: true,
-      sslValidate: false, // Set to true if using a valid certificate
-      tlsCAFile: "global-bundle.pem", // Path to the CA certificate file
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      tls: true, // Use TLS instead of SSL
+      tlsCAFile: "global-bundle.pem", // Amazon CA Cert
     });
-    console.log(`Amazon DocumentDB connected: ${conn.connection.host}`);
+
+    console.log(`Connected to Amazon DocumentDB: ${conn.connection.host}`);
   } catch (error) {
-    console.error("Amazon DocumentDB connection error:", error);
+    console.error("DocumentDB connection error:", error);
+    process.exit(1);
   }
 };
